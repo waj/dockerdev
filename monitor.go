@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/docker/engine-api/client"
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/events"
-	"github.com/docker/engine-api/types/network"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/events"
+	"github.com/docker/docker/api/types/network"
+	"github.com/docker/docker/client"
 	"golang.org/x/net/context"
 	"log"
 )
