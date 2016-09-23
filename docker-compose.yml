@@ -9,19 +9,16 @@ networks:
 
 services:
   proxy:
-    image: codekitchen/dinghy-http-proxy
+    build: .
+    image: juanwaj/dockerdev
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./Procfile:/app/Procfile
-      - ./nginx.tmpl:/app/nginx.tmpl
     networks:
       - shared
     ports:
       - 80:80
       - 443:443
       - 19322:19322/udp
-    environment:
-      DOMAIN_TLD: dev
     restart: always
     logging:
       options:
@@ -31,15 +28,9 @@ services:
   monitor:
     image: golang:1.6
     working_dir: /app
-    command: sh -c 'go get -d -v && go run monitor.go'
+    command: sh -c 'go get -d -v && go build monitor.go'
     environment:
       GOPATH: /go
     volumes:
       - .:/app
       - gopkg:/go
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: always
-    logging:
-      options:
-        max-size: 10m
-        max-file: '3'
