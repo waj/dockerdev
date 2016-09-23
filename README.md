@@ -4,24 +4,6 @@ Based on excellent work here: https://github.com/codekitchen/dinghy-http-proxy
 
 The difference of this proxy with the original made by @codekitchen is that this one uses a "shared" network to connect all the exposed containers using aliases. This way is more easy to make connections between the containers using the same host names.
 
-## How to build
-
-First, build the `monitor` service running:
-
-```bash
-docker-compose run monitor
-```
-
-This will leave a `monitor` executable on the working directory.
-
-Now build the main image:
-
-```bash
-docker-compose build proxy
-```
-
-This makes the `juanwaj/dockerdev` Docker image.
-
 ## Run
 
 Before running create a file on your Mac, located at `/etc/resolvers/dev` with the content:
@@ -37,17 +19,7 @@ Then, make sure the `shared` Docker network exists:
 docker network create shared
 ```
 
-### Run from the working copy
-
-If you cloned this repository, the proxy can be started executing:
-
-```bash
-docker-compose up -d proxy
-```
-
-### Run pulling the image from Docker Hub
-
-To run the proxy using the prebuilt image, run in your command line:
+Now start the proxy container:
 
 ```bash
 docker run -d --restart=always \
@@ -57,3 +29,30 @@ docker run -d --restart=always \
   --network shared --name dockerdev \
   juanwaj/dockerdev
 ```
+
+
+## Usage
+
+Once the proxy is running, new containers started using Docker Compose will be joined to the `shared` network and proxied by the `dockerdev` container.
+
+For example, if you have a container `web` in a project named `foo`, once the container is running, point your browser to `web.foo.dev`.
+
+
+## Development
+
+If you want to make changes or just don't want to use the prebuilt image, after cloning
+this repository, first build the `monitor` service running:
+
+```bash
+docker-compose run monitor
+```
+
+This will leave a `monitor` executable on the working directory.
+
+Now start the proxy:
+
+```bash
+docker-compose up -d proxy
+```
+
+That's all!
