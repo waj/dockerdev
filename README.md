@@ -6,7 +6,7 @@ The difference of this proxy with the original made by @codekitchen is that this
 
 ## Run
 
-Before running create a file on your Mac, located at `/etc/resolvers/dev` with the content:
+Before running create a file on your Mac, located at `/etc/resolver/dev` with the content:
 
 ```
 nameserver 127.0.0.1
