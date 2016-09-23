@@ -1,43 +1,48 @@
 package main
 
 import (
-	"encoding/json"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/events"
-	"github.com/docker/docker/api/types/network"
-	"github.com/docker/docker/client"
-	"golang.org/x/net/context"
+	docker "github.com/fsouza/go-dockerclient"
 	"log"
 )
 
 func main() {
-	cli, err := client.NewEnvClient()
+	cli, err := docker.NewClientFromEnv()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	eventReader, err := cli.Events(context.Background(), types.EventsOptions{})
+	listener := make(chan *docker.APIEvents)
+	err = cli.AddEventListener(listener)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	dec := json.NewDecoder(eventReader)
+	log.Println("Listening events")
 	for {
-		var event events.Message
-		dec.Decode(&event)
+		event := <-listener
 
-		if event.Type == events.ContainerEventType && event.Action == "create" {
+		if event.Type == "container" && event.Action == "create" {
+			containerName := event.Actor.Attributes["name"]
+			log.Printf("New container (%s) created\n", containerName)
+
 			project, hasProject := event.Actor.Attributes["com.docker.compose.project"]
 			service, hasService := event.Actor.Attributes["com.docker.compose.service"]
 			oneoff := event.Actor.Attributes["com.docker.compose.oneoff"]
 
 			if hasProject && hasService {
-				config := network.EndpointSettings{}
+				config := docker.NetworkConnectionOptions{Container: event.Actor.ID}
+
 				if oneoff == "False" {
-					config.Aliases = []string{service + "." + project + ".dev"}
+					alias := service + "." + project + ".dev"
+					log.Printf("Attaching %s to the shared network with alias %s\n", containerName, alias)
+					config.EndpointConfig = &docker.EndpointConfig{
+						Aliases: []string{alias},
+					}
+				} else {
+					log.Printf("Attaching %s to the shared network\n", event.Actor.ID)
 				}
 
-				err := cli.NetworkConnect(context.Background(), "shared", event.Actor.ID, &config)
+				err := cli.ConnectNetwork("shared", config)
 				if err != nil {
 					log.Fatal(err)
 				}

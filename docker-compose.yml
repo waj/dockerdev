@@ -29,9 +29,7 @@ services:
         max-file: '3'
 
   monitor:
-    build:
-      context: .
-      dockerfile: Dockerfile.monitor
+    image: golang:1.6
     working_dir: /app
     command: sh -c 'go get -d -v && go run monitor.go'
     environment:
