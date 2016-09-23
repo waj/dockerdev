@@ -53,6 +53,7 @@ To run the proxy using the prebuilt image, run in your command line:
 docker run -d --restart=always \
   -v /var/run/docker.sock:/tmp/docker.sock:ro \
   -p 80:80 -p 443:443 -p 19322:19322/udp \
-  --name dockerdev \
+  --log-opt max-size=10m --log-opt max-file=3 \
+  --network shared --name dockerdev \
   juanwaj/dockerdev
 ```
