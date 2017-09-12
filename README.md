@@ -33,10 +33,13 @@ docker run -d --restart=always \
 
 ## Usage
 
-Once the proxy is running, new containers started using Docker Compose will be joined to the `shared` network and proxied by the `dockerdev` container.
+Once the proxy is running, **new** containers started using Docker Compose will be joined to the `shared` network and proxied by the `dockerdev` container.
 
 For example, if you have a container `web` in a project named `foo`, once the container is running, point your browser to `web.foo.dev`.
 
+### Important note
+
+If the container was created **before** dockerdev was installed, **you need to recreate the container**. This means, if you are using docker compose, you need to run `docker-compose down` and `docker-compose up` to allow the new container to be added to the `shared` network.
 
 ## Development
 
