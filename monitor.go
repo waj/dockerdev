@@ -1,8 +1,10 @@
 package main
 
 import (
-	docker "github.com/fsouza/go-dockerclient"
 	"log"
+	"os"
+
+	docker "github.com/fsouza/go-dockerclient"
 )
 
 func main() {
@@ -16,6 +18,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	domain := os.Getenv("DOMAIN_TLD")
 
 	log.Println("Listening events")
 	for {
@@ -33,7 +37,7 @@ func main() {
 				config := docker.NetworkConnectionOptions{Container: event.Actor.ID}
 
 				if oneoff == "False" {
-					alias := service + "." + project + ".dev"
+					alias := service + "." + project + "." + domain
 					log.Printf("Attaching %s to the shared network with alias %s\n", containerName, alias)
 					config.EndpointConfig = &docker.EndpointConfig{
 						Aliases: []string{alias},
