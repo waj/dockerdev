@@ -27,6 +27,7 @@ docker run -d --restart=always \
   -p 80:80 -p 443:443 -p 19322:19322/udp \
   --log-opt max-size=10m --log-opt max-file=3 \
   --network shared --name dockerdev \
+  -e DOMAIN_TLD=lvh.me \
   juanwaj/dockerdev
 ```
 
@@ -35,7 +36,7 @@ docker run -d --restart=always \
 
 Once the proxy is running, **new** containers started using Docker Compose will be joined to the `shared` network and proxied by the `dockerdev` container.
 
-For example, if you have a container `web` in a project named `foo`, once the container is running, point your browser to `web.foo.dev`.
+For example, if you have a container `web` in a project named `foo`, once the container is running, point your browser to `web.foo.lvh.me`.
 
 ### Important note
 
