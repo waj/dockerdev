@@ -30,6 +30,11 @@ docker run -d --restart=always \
   -e DOMAIN_TLD=lvh.me \
   juanwaj/dockerdev
 ```
+**Note:** You may get an error stating the following:
+```
+docker: Error response from daemon: Get https://registry-1.docker.io/v2/juanwaj/dockerdev/manifests/latest: unauthorized: incorrect username or password.
+```
+If that happens, run `docker logout` and try again!
 
 
 ## Usage
