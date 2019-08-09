@@ -6,14 +6,7 @@ The difference of this proxy with the original made by @codekitchen is that this
 
 ## Run
 
-Before running create a file on your Mac, located at `/etc/resolver/dev` with the content:
-
-```
-nameserver 127.0.0.1
-port 19322
-```
-
-Then, make sure the `shared` Docker network exists:
+First, make sure the `shared` Docker network exists:
 
 ```bash
 docker network create shared
